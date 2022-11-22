@@ -1,0 +1,23 @@
+﻿@page "/chargen"
+@using Un1ver5e.Web.III.Shared
+@inject HttpClient Http
+
+<h3>Генератор персонажей</h3>
+
+@if (rawSvg is null)
+{
+	<p>Loading...</p>
+}
+else
+{
+	@((MarkupString)rawSvg)
+}
+
+@code {
+	private string? rawSvg;
+
+	protected override async Task OnInitializedAsync()
+	{
+		rawSvg = await Http.GetStringAsync("Svg");
+	}
+}
