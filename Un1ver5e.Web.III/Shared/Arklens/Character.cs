@@ -2,14 +2,14 @@
 
 namespace Un1ver5e.Web.III.Shared.Arklens
 {
-    public class Character
+    public record Character
     {
-        public Stat Str { get; } = new(8, "СИЛ", "💪");
-        public Stat Dex { get; } = new(8, "ЛВК", "🏃‍");
-        public Stat Con { get; } = new(8, "ВЫН", "🩸");
-        public Stat Int { get; } = new(8, "ИНТ", "🧠");
-        public Stat Wis { get; } = new(8, "МДР", "🦉");
-        public Stat Cha { get; } = new(8, "ХАР", "👄");
+        public Stat Str { get; } = new(8, "💪", "СИЛ");
+        public Stat Dex { get; } = new(8, "🏃‍", "ЛВК");
+        public Stat Con { get; } = new(8, "🩸", "ВЫН");
+        public Stat Int { get; } = new(8, "🧠", "ИНТ");
+        public Stat Wis { get; } = new(8, "🦉", "МДР");
+        public Stat Cha { get; } = new(8, "👄", "ХАР");
         public Race? Race { get; set; }
         public string? Name { get; set; }
         public Gender? Gender { get; set; }
@@ -18,11 +18,9 @@ namespace Un1ver5e.Web.III.Shared.Arklens
         public void SetRace(string? raceName)
             => Race = Race.BasicRaces
             .FirstOrDefault(r => r.Name == raceName);
-
         public void SetGender(string? genderName)
             => Gender = Gender.AllGenders
             .FirstOrDefault(g => g.Name == genderName);
-
         public void SetClass(string? className)
             => Class = Class.AllClasses
             .FirstOrDefault(c => c.Name == className);

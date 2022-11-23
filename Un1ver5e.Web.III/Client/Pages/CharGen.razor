@@ -14,9 +14,9 @@
 	<label for="GenderSelect">Выберите пол</label><br />
 	<select id="GenderSelect" @onchange=@(e => character.SetGender(e.Value as string))>
 		@GetDummySelectOption()
-		@foreach(Gender gender in Gender.AllGenders)
+		@foreach(Gender g in Gender.AllGenders)
 		{
-			<option value=@gender.Name>@gender.ToString()</option>
+			<option value=@g.Name>@g.ToString()</option>
 		}
 	</select>
 </p>
@@ -25,9 +25,20 @@
 	<label for="RaceSelect">Выберите расу</label><br />
 	<select id="RaceSelect" @onchange=@(e => character.SetRace(e.Value as string))>
 		@GetDummySelectOption()
-		@foreach (Race race in Race.BasicRaces)
+		@foreach (Race r in Race.BasicRaces)
 		{
-			<option value=@race.Name>@race.ToString()</option>
+			<option value=@r.Name>@r.ToString()</option>
+		}
+	</select>
+</p>
+
+<p>
+	<label for="ClassSelect">Выберите класс</label><br />
+	<select id="ClassSelect" @onchange=@(e => character.SetClass(e.Value as string))>
+		@GetDummySelectOption()
+		@foreach (Class c in Class.AllClasses)
+		{
+			<option value=@c.Name>@c.ToString()</option>
 		}
 	</select>
 </p>
