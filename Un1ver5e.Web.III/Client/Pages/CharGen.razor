@@ -1,23 +1,63 @@
 ﻿@page "/chargen"
 @using Un1ver5e.Web.III.Shared
+@using Un1ver5e.Web.III.Shared.Arklens
 @inject HttpClient Http
 
 <h3>Генератор персонажей</h3>
 
-@if (rawSvg is null)
+<p>
+	<label for="NameInput">Введите имя</label><br />
+	<input id="NameInput" type="text" @bind=@character.Name/>
+</p>
+
+<p>
+	<label for="GenderSelect">Выберите пол</label><br />
+	<select id="GenderSelect" @onchange=@(e => character.SetGender(e.Value as string))>
+		@GetDummySelectOption()
+		@foreach(Gender gender in Gender.AllGenders)
+		{
+			<option value=@gender.Name>@gender.ToString()</option>
+		}
+	</select>
+</p>
+
+<p>
+	<label for="RaceSelect">Выберите расу</label><br />
+	<select id="RaceSelect" @onchange=@(e => character.SetRace(e.Value as string))>
+		@GetDummySelectOption()
+		@foreach (Race race in Race.BasicRaces)
+		{
+			<option value=@race.Name>@race.ToString()</option>
+		}
+	</select>
+</p>
+
+@foreach (Stat stat in character.EnumerateStats())
 {
-	<p>Loading...</p>
-}
-else
-{
-	@((MarkupString)rawSvg)
+	<p>
+		<button @onclick=@(e => stat.TryDecrease())>-</button>
+		<b>@stat.Value</b> @stat.Modifyer
+		<button @onclick=@(e => stat.TryIncrease())>+</button>
+	</p>
 }
 
+<button @onclick=@(async _ => await ReloadSvg())>🔁</button><br />
+@((MarkupString)(rawSvg is null ? "<p>Загрузка файла SVG...</p>" : characterSvg!))
+
 @code {
+	private MarkupString GetDummySelectOption() 
+		=> (MarkupString)"<option selected disabled hidden>---</option>";
 	private string? rawSvg;
+	private Character character = new();
+	private string? characterSvg;
 
 	protected override async Task OnInitializedAsync()
 	{
 		rawSvg = await Http.GetStringAsync("Svg");
+		await ReloadSvg();
 	}
+
+	private Task ReloadSvg() => Task.Run(() => characterSvg = character.FillSvgFile(rawSvg ?? string.Empty));
 }
+
+
