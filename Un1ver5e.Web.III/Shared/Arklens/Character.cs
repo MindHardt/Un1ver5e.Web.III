@@ -13,7 +13,7 @@ namespace Un1ver5e.Web.III.Shared.Arklens
         public Race? Race { get; set; }
         public string? Name { get; set; }
         public Gender? Gender { get; set; }
-
+        public Class? Class { get; set; }
         
         public void SetRace(string? raceName)
             => Race = Race.BasicRaces
@@ -22,6 +22,10 @@ namespace Un1ver5e.Web.III.Shared.Arklens
         public void SetGender(string? genderName)
             => Gender = Gender.AllGenders
             .FirstOrDefault(g => g.Name == genderName);
+
+        public void SetClass(string? className)
+            => Class = Class.AllClasses
+            .FirstOrDefault(c => c.Name == className);
 
         /// <summary>
         /// Gets all six character stats.

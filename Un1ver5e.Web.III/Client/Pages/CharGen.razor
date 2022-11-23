@@ -35,21 +35,20 @@
 @foreach (Stat stat in character.EnumerateStats())
 {
 	<p>
-		<button @onclick=@(e => stat.TryDecrease())>-</button>
+		@stat.Emoji 
+		<button disabled="@(!stat.CanDecrease)" @onclick=@(e => stat.TryDecrease())>-</button>
 		<b>@stat.Value</b> @stat.Modifyer
-		<button @onclick=@(e => stat.TryIncrease())>+</button>
+		<button disabled="@(!stat.CanIncrease)" @onclick=@(e => stat.TryIncrease())>+</button>
 	</p>
 }
 
 <button @onclick=@(async _ => await ReloadSvg())>🔁</button><br />
-@((MarkupString)(rawSvg is null ? "<p>Загрузка файла SVG...</p>" : characterSvg!))
+@((MarkupString)(characterSvg ?? "<p>🕐...</p>"))
 
 @code {
-	private MarkupString GetDummySelectOption() 
-		=> (MarkupString)"<option selected disabled hidden>---</option>";
 	private string? rawSvg;
-	private Character character = new();
 	private string? characterSvg;
+	private Character character = new();
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -57,7 +56,13 @@
 		await ReloadSvg();
 	}
 
-	private Task ReloadSvg() => Task.Run(() => characterSvg = character.FillSvgFile(rawSvg ?? string.Empty));
+	private MarkupString GetDummySelectOption() => (MarkupString)"<option selected disabled hidden>---</option>";
+	private Task ReloadSvg() 
+	=> Task.Run(() =>
+	{
+		characterSvg = null;
+		characterSvg = character.FillSvgFile(rawSvg ?? string.Empty);
+	});
 }
 
 

@@ -1,9 +1,7 @@
 ﻿namespace Un1ver5e.Web.III.Shared.Arklens
 {
-    public class Stat
+    public record Stat: CharacterElement
     {
-        public string Name { get; }
-        public string Emoji { get; }
         /// <summary>
         /// The raw 8..15 value for the stat.
         /// </summary>
@@ -53,13 +51,11 @@
         /// </summary>
         public bool CanDecrease => Value > minValue;
 
-        public Stat(int value, string name, string emoji)
+        public Stat(int value, string emoji, string name) : base(emoji, name)
         {
             if (value < minValue || value > maxValue)
                 throw new ArgumentOutOfRangeException($"Value must be in range {minValue}..{maxValue}.");
             Value = value;
-            Name = name;
-            Emoji = emoji;
         }
 
         private const int minValue = 8;

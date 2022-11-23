@@ -1,21 +1,10 @@
 ﻿namespace Un1ver5e.Web.III.Shared.Arklens
 {
-    public record Race
+    public record Race : CharacterElement
     {
-        public string Name { get; }
-        public string Emoji { get; }
-        public Race(string name, string emoji)
+        public Race(string emoji, string name) : base(emoji, name)
         {
-            Name = name;
-            Emoji = emoji;
         }
-        /// <summary>
-        /// Formats this <see cref="Race"/> as a <see langword="string"/>.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-            => $"{Emoji} {Name}";
-
         public static Race Human => new("Человек", "🧑");
         public static Race Elf => new("Эльф", "🧝");
         public static Race Dwarf => new("Дварф", "🧔");
