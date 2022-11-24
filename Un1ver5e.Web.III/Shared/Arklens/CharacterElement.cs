@@ -1,9 +1,11 @@
-﻿namespace Un1ver5e.Web.III.Shared.Arklens
+﻿using System.ComponentModel;
+
+namespace Un1ver5e.Web.III.Shared.Arklens
 {
     /// <summary>
     /// Represents an element with name and emoji representations.
     /// </summary>
-    public abstract record CharacterElement
+    public abstract class CharacterElement : IEquatable<CharacterElement>
     {
         public string Emoji { get; }
         public string Name { get; }
@@ -20,6 +22,20 @@
         /// </summary>
         /// <returns></returns>
         public override string ToString()
-            => $"{Emoji} {Name}";
+        {
+            return $"{Emoji} {Name}";
+        }
+
+        public override bool Equals(object? obj)
+            => obj is CharacterElement other &&
+            other.Name == Name && 
+            other.Emoji == Emoji;
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Emoji, Name);
+        }
+
+        public bool Equals(CharacterElement? other) => Equals(other);
     }
 }

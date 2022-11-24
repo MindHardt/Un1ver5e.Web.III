@@ -14,16 +14,6 @@ namespace Un1ver5e.Web.III.Shared.Arklens
         public string? Name { get; set; }
         public Gender? Gender { get; set; }
         public Class? Class { get; set; }
-        
-        public void SetRace(string? raceName)
-            => Race = Race.BasicRaces
-            .FirstOrDefault(r => r.Name == raceName);
-        public void SetGender(string? genderName)
-            => Gender = Gender.AllGenders
-            .FirstOrDefault(g => g.Name == genderName);
-        public void SetClass(string? className)
-            => Class = Class.AllClasses
-            .FirstOrDefault(c => c.Name == className);
 
         /// <summary>
         /// Gets all six character stats.
@@ -31,6 +21,23 @@ namespace Un1ver5e.Web.III.Shared.Arklens
         /// <returns></returns>
         public IEnumerable<Stat> EnumerateStats()
             => new[] { Str, Dex, Con, Int, Wis, Cha };
+
+        /// <summary>
+        /// Sets this <see cref="Character"/>s property with <paramref name="element"/>
+        /// according to its type.
+        /// </summary>
+        /// <param name="element"></param>
+        public void Set(CharacterElement? element)
+        {
+            Action action = element switch
+            {
+                Gender gender => () => Gender = gender,
+                Race race => () => Race = race,
+                Class @class => () => Class = @class,
+                _ => () => { },
+            };
+            action();
+        }
 
         public string FillSvgFile(string rawSvg)
             => new StringBuilder(rawSvg)
@@ -50,6 +57,7 @@ namespace Un1ver5e.Web.III.Shared.Arklens
 
             .Replace("%RACE%", Race?.ToString())
             .Replace("%GENDER%", Gender?.ToString())
+            .Replace("%CLASS%", Class?.ToString())
             .Replace("%NAME%", Name)
 
             .ToString();

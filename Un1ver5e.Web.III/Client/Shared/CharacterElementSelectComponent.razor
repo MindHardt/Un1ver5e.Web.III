@@ -1,0 +1,22 @@
+﻿@using Un1ver5e.Web.III.Shared.Arklens
+
+<label for=@Name>@Name</label><br />
+<select id=@Name @onchange=@(e => Character.Set(Options.FirstOrDefault(o => o.Name == e.Value?.ToString())))>
+	<option selected disabled hidden>---</option>
+	@foreach(var option in Options)
+	{
+		<option value=@option.Name>@option.ToString()</option>
+	}
+</select>
+
+
+@code {
+	#pragma warning disable
+	[Parameter]
+	public string Name { get; set; }
+	[Parameter]
+	public Character Character { get; set; }
+	[Parameter]
+	public IEnumerable<CharacterElement> Options { get; set; }
+	#pragma warning restore
+}

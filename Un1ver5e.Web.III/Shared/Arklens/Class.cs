@@ -1,6 +1,6 @@
 ﻿namespace Un1ver5e.Web.III.Shared.Arklens
 {
-    public record Class : CharacterElement
+    public class Class : CharacterElement
     {
         public Class(string emoji, string name) : base(emoji, name)
         {
@@ -20,7 +20,7 @@
         public static Class Wizard => new("📚", "Волшебник");
 
 
-        public static IEnumerable<Class> AllClasses
+        public static Class[] All
             => new[] { Barbarian, Bard, BookWorm, Druid, Kineticist, Monk, Paladin, Priest, Ranger, Rogue, Warrior, Wizard };
     }
 }

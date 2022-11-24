@@ -1,6 +1,6 @@
 ﻿namespace Un1ver5e.Web.III.Shared.Arklens
 {
-    public record Race : CharacterElement
+    public class Race : CharacterElement
     {
         public Race(string emoji, string name) : base(emoji, name)
         {
@@ -16,7 +16,7 @@
         /// Enumerates all basic races. They also can be accessed as public properties.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<Race> BasicRaces
+        public static Race[] All
             => new[] { Human, Elf, Dwarf, Kitsune, Minas, Serpent };
     }
 }

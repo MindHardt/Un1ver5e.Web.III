@@ -1,6 +1,6 @@
 ﻿namespace Un1ver5e.Web.III.Shared.Arklens
 {
-    public record Stat: CharacterElement
+    public class Stat: CharacterElement
     {
         /// <summary>
         /// The raw 8..15 value for the stat.
