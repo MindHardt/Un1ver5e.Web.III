@@ -3,63 +3,104 @@
     public class Stat: CharacterElement
     {
         /// <summary>
-        /// The raw 8..15 value for the stat.
+        /// The raw value for the stat.
+        /// <para>Can be in 3..18</para>
         /// </summary>
-        public int Value { get; set; }
+        public int RawValue { get; set; }
         /// <summary>
-        /// The -2..+2 modifyer of the stat.
+        /// The modifyer of the <see cref="RawValue"/>.
+        /// <para>Can be in -4..+4</para>
         /// </summary>
-        public int Modifyer => Value / 2 - 5;
+        public int RawMod => GetMod(RawValue);
         /// <summary>
         /// The point cost of the stat.
         /// </summary>
-        public int TotalCost => s_upgradeCosts[Value - minValue];
+        public int TotalCost => s_upgradeCosts[CostIndex];
+        /// <summary>
+        /// Indicates whether this <see cref="Stat"/> is amplified by 
+        /// the <see cref="Character.Race"/>. This may have following values:
+        /// <para>
+        /// <see langword="true"/> if the value is increased,
+        /// <see langword="null"/> if the value is unaffected,
+        /// <see langword="false"/> if the value is decreased.
+        /// </para>
+        /// </summary>
+        public bool? RaceAmplified { get; set; }
+
+        /// <summary>
+        /// The complete value for the stat including <see cref="RaceAmplified"/>.
+        /// <para>Can be in 1..20</para>
+        /// </summary>
+        public int DisplayValue => RawValue + (RaceAmplified.HasValue ? RaceAmplified.Value ? 2 : -2 : 0);
+        /// <summary>
+        /// The modifyer of the <see cref="DisplayValue"/>.
+        /// <para>Can be in -5..+5</para>
+        /// </summary>
+        public int DisplayMod => GetMod(DisplayValue);
+
         /// <summary>
         /// Defines whether a point can be added to this stat.
         /// </summary>
-        public bool CanIncrease => Value < maxValue;
+        public bool CanIncrease => RawValue < MaxValue;
         /// <summary>
-        /// Attempts to inrease <see cref="Value"/>.
+        /// Defines whether a point can be removed from the stat.
         /// </summary>
-        /// <returns><see langword="true"/> if <see cref="Value"/> is increased, 
+        public bool CanDecrease => RawValue > MinValue;
+
+
+        /// <summary>
+        /// Gets the amounts of points needed to increase the value 
+        /// or <see langword="null"/> if the stat cannot get higher.
+        /// </summary>
+        public int? IncreaseCost => CanIncrease ? s_upgradeCosts[CostIndex + 1] - TotalCost : null;
+        /// <summary>
+        /// Gets the amounts of points needed to decrease the value 
+        /// or <see langword="null"/> if the stat cannot get lower.
+        /// </summary>
+        public int? DecreaseCost => CanDecrease ? s_upgradeCosts[CostIndex - 1] - TotalCost : null;
+        
+
+        /// <summary>
+        /// Attempts to increase <see cref="RawValue"/>.
+        /// </summary>
+        /// <returns><see langword="true"/> if <see cref="RawValue"/> is increased, 
         /// otherwise <see langword="false"/>.</returns>
         public bool TryIncrease()
         {
             if (CanIncrease)
             {
-                Value++;
+                RawValue++;
                 return true;
             }
             return false;
         }
         /// <summary>
-        /// Attempts to decrease <see cref="Value"/>.
+        /// Attempts to decrease <see cref="RawValue"/>.
         /// </summary>
-        /// <returns><see langword="true"/> if <see cref="Value"/> is decreased, 
+        /// <returns><see langword="true"/> if <see cref="RawValue"/> is decreased, 
         /// otherwise <see langword="false"/>.</returns>
         public bool TryDecrease()
         {
             if (CanDecrease)
             {
-                Value--;
+                RawValue--;
                 return true;
             }
             return false;
         }
-        /// <summary>
-        /// Defines whether a point can be removed from the stat.
-        /// </summary>
-        public bool CanDecrease => Value > minValue;
 
+        private static int GetMod(int value) => value / 2 - 5;
         public Stat(int value, string emoji, string name) : base(emoji, name)
         {
-            if (value < minValue || value > maxValue)
-                throw new ArgumentOutOfRangeException($"Value must be in range {minValue}..{maxValue}.");
-            Value = value;
+            if (value < MinValue || value > MaxValue)
+                throw new ArgumentOutOfRangeException($"Value must be in range {MinValue}..{MaxValue}.");
+            RawValue = value;
         }
 
-        private const int minValue = 8;
-        private const int maxValue = 15;
-        private static readonly int[] s_upgradeCosts = { 0, 1, 2, 3, 4, 5, 7, 9 };
+        public const int MinValue = 7;
+        public const int MaxValue = 18;
+        private int CostIndex => RawValue - MinValue;
+        private static readonly int[] s_upgradeCosts = 
+        { 0, 2, 3,   4, 5, 6,   7, 9, 11,   14, 17, 21 };
     }
 }

@@ -36,6 +36,14 @@ namespace Un1ver5e.Web.III.Shared.Arklens
             return HashCode.Combine(Emoji, Name);
         }
 
+        public static bool operator ==(CharacterElement left, CharacterElement right)
+            => left.Equals(right);
+
+        public static bool operator !=(CharacterElement left, CharacterElement right)
+            => !left.Equals(right);
+
+
+
         public bool Equals(CharacterElement? other) => Equals(other);
     }
 }

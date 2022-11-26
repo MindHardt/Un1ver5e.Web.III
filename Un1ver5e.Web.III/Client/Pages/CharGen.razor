@@ -34,15 +34,13 @@
 	</CharacterElementSelectComponent>
 </p>
 
-@foreach (Stat stat in character.EnumerateStats())
-{
-	<p>
-		@stat.Emoji 
-		<button disabled="@(!stat.CanDecrease)" @onclick=@(e => stat.TryDecrease())>-</button>
-		<b>@stat.Value</b> @stat.Modifyer
-		<button disabled="@(!stat.CanIncrease)" @onclick=@(e => stat.TryIncrease())>+</button>
-	</p>
-}
+<p>
+	<StatCalculatorComponent
+		Character=@character
+		TotalPoints=44>
+	</StatCalculatorComponent>
+
+</p>
 
 <button @onclick=@(async _ => await ReloadSvg())>🔁</button><br />
 @((MarkupString)(characterSvg ?? "<p>🕐...</p>"))

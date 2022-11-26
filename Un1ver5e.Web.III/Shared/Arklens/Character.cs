@@ -4,23 +4,38 @@ namespace Un1ver5e.Web.III.Shared.Arklens
 {
     public record Character
     {
-        public Stat Str { get; } = new(8, "💪", "СИЛ");
-        public Stat Dex { get; } = new(8, "🏃‍", "ЛВК");
-        public Stat Con { get; } = new(8, "🩸", "ВЫН");
-        public Stat Int { get; } = new(8, "🧠", "ИНТ");
-        public Stat Wis { get; } = new(8, "🦉", "МДР");
-        public Stat Cha { get; } = new(8, "👄", "ХАР");
+        public Stat Str { get; } = new(Stat.MinValue, "💪", "СИЛ");
+        public Stat Dex { get; } = new(Stat.MinValue, "🏃‍", "ЛВК");
+        public Stat Con { get; } = new(Stat.MinValue, "🩸", "ВЫН");
+        public Stat Int { get; } = new(Stat.MinValue, "🧠", "ИНТ");
+        public Stat Wis { get; } = new(Stat.MinValue, "🦉", "МДР");
+        public Stat Cha { get; } = new(Stat.MinValue, "👄", "ХАР");
         public Race? Race { get; set; }
         public string? Name { get; set; }
         public Gender? Gender { get; set; }
         public Class? Class { get; set; }
+        public Alignment? Alignment { get; set; }
 
         /// <summary>
         /// Gets all six character stats.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Stat> EnumerateStats()
+        public Stat[] AllStats
             => new[] { Str, Dex, Con, Int, Wis, Cha };
+
+        private void ApplyRaceImpact()
+        {
+            ClearRaceImpact();
+            var impact = Race?.StatImpact(this);
+            if (impact is null) return;
+            impact.Value.amp1.RaceAmplified = true;
+            impact.Value.amp2.RaceAmplified = true;
+            impact.Value.red.RaceAmplified = false;
+        }
+        private void ClearRaceImpact()
+        {
+            foreach (Stat stat in AllStats) stat.RaceAmplified = null;
+        }
 
         /// <summary>
         /// Sets this <see cref="Character"/>s property with <paramref name="element"/>
@@ -32,28 +47,30 @@ namespace Un1ver5e.Web.III.Shared.Arklens
             Action action = element switch
             {
                 Gender gender => () => Gender = gender,
-                Race race => () => Race = race,
+                Race race => () => { Race = race; ApplyRaceImpact(); },
                 Class @class => () => Class = @class,
-                _ => () => { },
+                Stat stat => () => AllStats.First(s => s == stat).RaceAmplified = true,
+                _ => () => { }
+                ,
             };
             action();
         }
 
         public string FillSvgFile(string rawSvg)
             => new StringBuilder(rawSvg)
-            .Replace("%STR%", Str.Value.ToString())
-            .Replace("%DEX%", Dex.Value.ToString())
-            .Replace("%CON%", Con.Value.ToString())
-            .Replace("%INT%", Int.Value.ToString())
-            .Replace("%WIS%", Wis.Value.ToString())
-            .Replace("%CHA%", Cha.Value.ToString())
+            .Replace("%STR%", Str.RawValue.ToString())
+            .Replace("%DEX%", Dex.RawValue.ToString())
+            .Replace("%CON%", Con.RawValue.ToString())
+            .Replace("%INT%", Int.RawValue.ToString())
+            .Replace("%WIS%", Wis.RawValue.ToString())
+            .Replace("%CHA%", Cha.RawValue.ToString())
 
-            .Replace("%STR+%", Str.Modifyer.ToString())
-            .Replace("%DEX+%", Dex.Modifyer.ToString())
-            .Replace("%CON+%", Con.Modifyer.ToString())
-            .Replace("%INT+%", Int.Modifyer.ToString())
-            .Replace("%WIS+%", Wis.Modifyer.ToString())
-            .Replace("%CHA+%", Cha.Modifyer.ToString())
+            .Replace("%STR+%", Str.RawMod.AsMod())
+            .Replace("%DEX+%", Dex.RawMod.AsMod())
+            .Replace("%CON+%", Con.RawMod.AsMod())
+            .Replace("%INT+%", Int.RawMod.AsMod())
+            .Replace("%WIS+%", Wis.RawMod.AsMod())
+            .Replace("%CHA+%", Cha.RawMod.AsMod())
 
             .Replace("%RACE%", Race?.ToString())
             .Replace("%GENDER%", Gender?.ToString())
