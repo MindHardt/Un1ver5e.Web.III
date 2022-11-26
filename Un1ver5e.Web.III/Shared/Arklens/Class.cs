@@ -2,22 +2,26 @@
 {
     public class Class : CharacterElement
     {
-        public Class(string emoji, string name) : base(emoji, name)
+        public int HpGain { get; }
+        public int SkillPoints { get; }
+        public Class(string emoji, string name, int hpGain, int skillPoints) : base(emoji, name)
         {
+            HpGain = hpGain;
+            SkillPoints = skillPoints;
         }
 
-        public static Class Barbarian => new("😡", "Варвар");
-        public static Class Bard => new("🪕", "Бард");
-        public static Class BookWorm => new("🎓", "Книгочей");
-        public static Class Druid => new("🍀", "Друид");
-        public static Class Kineticist => new("☄", "Кинетик");
-        public static Class Monk => new("🧘‍", "Монах");
-        public static Class Paladin => new("🛡", "Паладин");
-        public static Class Priest => new("📜", "Жрец");
-        public static Class Ranger => new("🦅", "Следопыт");
-        public static Class Rogue => new("🗡", "Разбойник");
-        public static Class Warrior => new("⚔", "Воин");
-        public static Class Wizard => new("📚", "Волшебник");
+        public static Class Barbarian => new("😡", "Варвар", 12, 4);
+        public static Class Bard => new("🪕", "Бард", 8, 5);
+        public static Class BookWorm => new("🎓", "Книгочей", 6, 6);
+        public static Class Druid => new("🍀", "Друид", 8, 3);
+        public static Class Kineticist => new("☄", "Кинетик", 10, 3);
+        public static Class Monk => new("🧘‍", "Монах", 10, 4);
+        public static Class Paladin => new("🛡", "Паладин", 10, 3);
+        public static Class Priest => new("📜", "Жрец", 8, 4);
+        public static Class Ranger => new("🦅", "Следопыт", 8, 5);
+        public static Class Rogue => new("🗡", "Разбойник", 8, 5);
+        public static Class Warrior => new("⚔", "Воин", 10, 3);
+        public static Class Wizard => new("📚", "Волшебник", 6, 6);
 
 
         public static Class[] All

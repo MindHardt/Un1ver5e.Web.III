@@ -27,8 +27,9 @@ namespace Un1ver5e.Web.III.Shared.Arklens
         }
 
         public override bool Equals(object? obj)
-            => obj is CharacterElement other &&
-            other.Name == Name && 
+            => ReferenceEquals(this, obj) ||
+            obj is CharacterElement other &&
+            other.Name == Name &&
             other.Emoji == Emoji;
 
         public override int GetHashCode()
@@ -36,11 +37,11 @@ namespace Un1ver5e.Web.III.Shared.Arklens
             return HashCode.Combine(Emoji, Name);
         }
 
-        public static bool operator ==(CharacterElement left, CharacterElement right)
-            => left.Equals(right);
+        public static bool operator ==(CharacterElement? left, CharacterElement? right)
+            => Equals(left, right);
 
-        public static bool operator !=(CharacterElement left, CharacterElement right)
-            => !left.Equals(right);
+        public static bool operator !=(CharacterElement? left, CharacterElement? right)
+            => !Equals(left, right);
 
 
 

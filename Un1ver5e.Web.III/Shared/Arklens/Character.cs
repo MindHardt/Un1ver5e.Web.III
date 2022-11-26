@@ -49,6 +49,7 @@ namespace Un1ver5e.Web.III.Shared.Arklens
                 Gender gender => () => Gender = gender,
                 Race race => () => { Race = race; ApplyRaceImpact(); },
                 Class @class => () => Class = @class,
+                Alignment alignment => () => Alignment = alignment,
                 Stat stat => () => AllStats.First(s => s == stat).RaceAmplified = true,
                 _ => () => { }
                 ,
@@ -73,9 +74,17 @@ namespace Un1ver5e.Web.III.Shared.Arklens
             .Replace("%CHA+%", Cha.RawMod.AsMod())
 
             .Replace("%RACE%", Race?.ToString())
-            .Replace("%GENDER%", Gender?.ToString())
+            .Replace("%RACETRAIT1%", Race?.Traits?[0])
+            .Replace("%RACETRAIT2%", Race?.Traits?[1])
+
             .Replace("%CLASS%", Class?.ToString())
+            .Replace("%HPGAIN%", (Class?.HpGain + Con.DisplayMod)?.ToString())
+            .Replace("%SKILLS%", (Class?.SkillPoints + Int.DisplayMod + (Race == Race.Human ? 1 : 0))?.ToString())
+
+            .Replace("%GENDER%", Gender?.ToString())
             .Replace("%NAME%", Name)
+
+            .Replace("%ALIGNMENT%", Alignment?.ToString())
 
             .ToString();
     }
