@@ -22,15 +22,15 @@
 			+
 		</button>
 		@(stat.IncreaseCost.AsMod() ?? "-")
-
+		&nbsp;
 		@if (stat.RaceAmplified is not null)
 		{
 			@((MarkupString)(stat.RaceAmplified.Value ? 
-			"<span style=\"color: green\">+2</span>" : 
+			"<span style=\"color: green\">+2</span>": 
 			"<span style=\"color: red\">-2</span>"))
 		}
-
-		<b>@stat.DisplayValue	@stat.DisplayMod.AsMod()</b>
+		&nbsp;
+		<b>@stat.DisplayValue @stat.DisplayMod.AsMod()</b>
 	</p>
 }
 

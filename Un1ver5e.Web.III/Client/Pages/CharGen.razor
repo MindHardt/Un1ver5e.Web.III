@@ -1,7 +1,9 @@
 ﻿@page "/chargen"
+@using System.Text
 @using Un1ver5e.Web.III.Shared
 @using Un1ver5e.Web.III.Shared.Arklens
 @inject HttpClient Http
+@inject IJSRuntime JS
 
 <h3>Генератор персонажей</h3>
 
@@ -24,6 +26,15 @@
 		Character=@character
 		Options=@Race.All>
 	</CharacterElementSelectComponent>
+
+	<br />Расовый бонус<br />
+	<select @onchange=@(e => { character.ClearRaceImpact() ; character.AllStats.First(s => s.ToString() == e.Value as string).RaceAmplified = true; })>
+		@foreach (Stat stat in character.AllStats)
+		{
+			<option>@stat.ToString()</option>
+		}
+	</select>
+	<span style="color: red">НЕ МЕНЯЙТЕ ЕСЛИ ВЫ НЕ @Race.Human</span>
 </p>
 
 <p>
@@ -32,6 +43,15 @@
 		Character=@character
 		Options=@Class.All>
 	</CharacterElementSelectComponent>
+
+	<br />Подкласс🚧<br />
+	<select @onchange=@(e => character.SubClass = e.Value as string)>
+	@foreach (string subclass in Class.All.SelectMany(c => c.Subclasses ?? new[] { "---" }))
+	{
+		<option>@subclass</option>
+	}
+	</select>
+	<span style="color: red">НЕ МЕНЯЙТЕ ЕСЛИ ВЫ НЕ [@(string.Join(", ", Class.All.Where(c => c.Subclasses is not null)))]</span>
 </p>
 
 <p>
@@ -51,7 +71,8 @@
 </p>
 
 <button @onclick=@(async _ => await ReloadSvg())>🔁</button><br />
-@((MarkupString)(characterSvg ?? "<p>🕐...</p>"))
+@((MarkupString)(characterSvg ?? "<p>🕐...</p>"))<br />
+<button @onclick=@DownloadSvg disabled=@(characterSvg is null)>📲 сохранить</button>
 
 @code {
 	private string? rawSvg;
@@ -70,6 +91,22 @@
 		characterSvg = null;
 		characterSvg = character.FillSvgFile(rawSvg ?? string.Empty);
 	});
+
+	private async Task DownloadSvg()
+	{
+		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(characterSvg ?? string.Empty));
+		string fileName = $"{character.Name}.AL.svg";
+
+		using var streamRef = new DotNetStreamReference(stream);
+		await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+	}
+
+	private IJSObjectReference? module;
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/CharGen.razor.js");
+	}
 }
+
 
 

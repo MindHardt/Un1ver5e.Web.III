@@ -15,6 +15,7 @@ namespace Un1ver5e.Web.III.Shared.Arklens
         public Gender? Gender { get; set; }
         public Class? Class { get; set; }
         public Alignment? Alignment { get; set; }
+        public string? SubClass { get; set; }
 
         /// <summary>
         /// Gets all six character stats.
@@ -32,7 +33,7 @@ namespace Un1ver5e.Web.III.Shared.Arklens
             impact.Value.amp2.RaceAmplified = true;
             impact.Value.red.RaceAmplified = false;
         }
-        private void ClearRaceImpact()
+        public void ClearRaceImpact()
         {
             foreach (Stat stat in AllStats) stat.RaceAmplified = null;
         }
@@ -59,28 +60,29 @@ namespace Un1ver5e.Web.III.Shared.Arklens
 
         public string FillSvgFile(string rawSvg)
             => new StringBuilder(rawSvg)
-            .Replace("%STR%", Str.RawValue.ToString())
-            .Replace("%DEX%", Dex.RawValue.ToString())
-            .Replace("%CON%", Con.RawValue.ToString())
-            .Replace("%INT%", Int.RawValue.ToString())
-            .Replace("%WIS%", Wis.RawValue.ToString())
-            .Replace("%CHA%", Cha.RawValue.ToString())
+            .Replace("%STR%", Str.DisplayValue.ToString())
+            .Replace("%DEX%", Dex.DisplayValue.ToString())
+            .Replace("%CON%", Con.DisplayValue.ToString())
+            .Replace("%INT%", Int.DisplayValue.ToString())
+            .Replace("%WIS%", Wis.DisplayValue.ToString())
+            .Replace("%CHA%", Cha.DisplayValue.ToString())
 
-            .Replace("%STR+%", Str.RawMod.AsMod())
-            .Replace("%DEX+%", Dex.RawMod.AsMod())
-            .Replace("%CON+%", Con.RawMod.AsMod())
-            .Replace("%INT+%", Int.RawMod.AsMod())
-            .Replace("%WIS+%", Wis.RawMod.AsMod())
-            .Replace("%CHA+%", Cha.RawMod.AsMod())
+            .Replace("%STR+%", Str.DisplayMod.AsMod())
+            .Replace("%DEX+%", Dex.DisplayMod.AsMod())
+            .Replace("%CON+%", Con.DisplayMod.AsMod())
+            .Replace("%INT+%", Int.DisplayMod.AsMod())
+            .Replace("%WIS+%", Wis.DisplayMod.AsMod())
+            .Replace("%CHA+%", Cha.DisplayMod.AsMod())
 
             .Replace("%RACE%", Race?.ToString())
             .Replace("%RACETRAIT1%", Race?.Traits?[0])
             .Replace("%RACETRAIT2%", Race?.Traits?[1])
 
             .Replace("%CLASS%", Class?.ToString())
+            .Replace("%SUBCLASS%", SubClass)
             .Replace("%HPGAIN%", (Class?.HpGain + Con.DisplayMod)?.ToString())
             .Replace("%SKILLS%", (Class?.SkillPoints + Int.DisplayMod + (Race == Race.Human ? 1 : 0))?.ToString())
-
+            
             .Replace("%GENDER%", Gender?.ToString())
             .Replace("%NAME%", Name)
 
